@@ -12,8 +12,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -42,11 +52,36 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("http://api.themoviedb.org/3/movie/popular?api_key=8332a17f0431de65798214096334a4b6")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        String jsonString = response.body().string();
+
+        Moshi moshi = new Moshi.Builder().build();
+
+        Type type = Types.newParameterizedType(List.class, Movie.class);
+        JsonAdapter<List<Movie>> adapter = moshi.adapter(type);
+        List<Movie> movies = null;
+        try {
+            movies = adapter.fromJson(jsonString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*
         List<Movie> movies = new ArrayList<>();
 
         for (int i = 0; i < 25; i++) {
             movies.add(new Movie());
         }
+        */
+
         mAdapter.setMovieList(movies);
 
         /*
