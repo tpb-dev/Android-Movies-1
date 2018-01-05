@@ -1,5 +1,6 @@
 package club.thatpetbff.android_movies_1;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MoviesAdapter mAdapter;
 
+    OkHttpClient client = new OkHttpClient();
+
+    public String url= "https://api.themoviedb.org/3/movie/popular?api_key=8332a17f0431de65798214096334a4b6";
+
     public static class MovieViewHolder extends RecyclerView.ViewHolder
     {
         public ImageView imageView;
@@ -53,29 +58,12 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder() 
-                .url("http://api.themoviedb.org/3/movie/popular?api_key=8332a17f0431de65798214096334a4b6")
-                .build();
-
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String jsonString = null;
-        try {
-            jsonString = response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        OkHttpHandler okHttpHandler= new OkHttpHandler();
+        okHttpHandler.execute(url);
 
         //https://www.journaldev.com/13629/okhttp-android-example-tutorial#synchronous-vs-asynchronous-calls
 
-
+        /*
         Moshi moshi = new Moshi.Builder().build();
 
         Type type = Types.newParameterizedType(List.class, Movie.class);
@@ -86,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
         /*
         List<Movie> movies = new ArrayList<>();
 
@@ -95,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-        mAdapter.setMovieList(movies);
+        //mAdapter.setMovieList(movies);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -109,7 +97,36 @@ public class MainActivity extends AppCompatActivity {
         */
     }
 
-    @Override
+    public class OkHttpHandler extends AsyncTask {
+
+        OkHttpClient client = new OkHttpClient();
+
+        @Override
+        protected String doInBackground(Object... params) {
+
+            Request.Builder builder = new Request.Builder();
+            builder.url((String)params[0]);
+            Request request = builder.build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object s) {
+            String a = (String)s;
+            super.onPostExecute(a);
+            System.out.println(a);
+            //txtString.setText(s);
+        }
+
+    }
+        @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
