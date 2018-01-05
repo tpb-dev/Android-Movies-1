@@ -40,11 +40,11 @@ public class Movie {
     }
 
     public String getBackdrop() {
-        return backdrop;
+        return backdrop_path;
     }
 
     public void setBackdrop(String backdrop) {
-        this.backdrop = backdrop;
+        this.backdrop_path = backdrop;
     }
 
     public String getPoster_path() {

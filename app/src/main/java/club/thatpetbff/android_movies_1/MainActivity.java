@@ -55,13 +55,26 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
 
-        Request request = new Request.Builder()
+        Request request = new Request.Builder() 
                 .url("http://api.themoviedb.org/3/movie/popular?api_key=8332a17f0431de65798214096334a4b6")
                 .build();
 
-        Response response = client.newCall(request).execute();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        String jsonString = response.body().string();
+        String jsonString = null;
+        try {
+            jsonString = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //https://www.journaldev.com/13629/okhttp-android-example-tutorial#synchronous-vs-asynchronous-calls
+
 
         Moshi moshi = new Moshi.Builder().build();
 
