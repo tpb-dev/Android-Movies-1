@@ -43,9 +43,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MainActivity.MovieViewHo
 
         // This is how we use Picasso to load images from the internet.
         Picasso.with(mContext)
-                .load(movie.getPoster())
-                .placeholder(R.color.colorAccent)
+                .load("http://image.tmdb.org/t/p/w185/" + movie.getPoster())
                 .into(holder.imageView);
+        System.out.println("Tried Picasso = " + position + ", " + movie.getPoster());
     }
 
     @Override

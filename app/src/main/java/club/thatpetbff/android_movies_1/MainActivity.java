@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
@@ -63,25 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         //https://www.journaldev.com/13629/okhttp-android-example-tutorial#synchronous-vs-asynchronous-calls
 
-        /*
-        Moshi moshi = new Moshi.Builder().build();
-
-        Type type = Types.newParameterizedType(List.class, Movie.class);
-        JsonAdapter<List<Movie>> adapter = moshi.adapter(type);
-        List<Movie> movies = null;
-        try {
-            movies = adapter.fromJson(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-        /*
-        List<Movie> movies = new ArrayList<>();
-
-        for (int i = 0; i < 25; i++) {
-            movies.add(new Movie());
-        }
-        */
 
         //mAdapter.setMovieList(movies);
 
@@ -121,12 +103,39 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Object s) {
             String a = (String)s;
             super.onPostExecute(a);
-            System.out.println(a);
+            processJSON(a);
             //txtString.setText(s);
         }
 
     }
-        @Override
+
+    public void processJSON(String json) {
+        System.out.println(json);
+        Gson gson = new Gson();
+        MovieResponse obj = gson.fromJson(json, MovieResponse.class);
+        for(Movie a : obj.getResults()) {
+            System.out.println("Movie: " + a.getTitle());
+        }
+
+        mAdapter.setMovieList(obj.getResults());
+        System.out.println("Set the list to adapter");
+/*
+        Moshi moshi = new Moshi.Builder().build();
+
+        Type type = Types.newParameterizedType(List.class, Movie.class);
+        JsonAdapter<List<Movie>> adapter = moshi.adapter(type);
+        List<Movie> movies = null;
+        try {
+            movies = adapter.fromJson(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
+    }
+
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
