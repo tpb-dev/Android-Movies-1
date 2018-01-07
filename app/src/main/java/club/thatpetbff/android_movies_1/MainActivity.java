@@ -1,3 +1,5 @@
+//https://developer.android.com/training/basics/firstapp/starting-activity.html
+
 package club.thatpetbff.android_movies_1;
 
 import android.os.AsyncTask;
@@ -78,10 +80,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void sortArray() {
         System.out.println("Reached sort");
+        List<Movie> temp = mAdapter.getmMovieList();
+        System.out.println(temp);
         if(!popularity)
-            Collections.sort(mAdapter.getmMovieList(), (m1, m2) -> m1.getPopularity().compareTo(m2.getPopularity()));
+            Collections.sort(temp, (m1, m2) -> m1.getPopularity().compareTo(m2.getPopularity()));
         else
-            Collections.sort(mAdapter.getmMovieList(), (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
+            Collections.sort(temp, (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
+        System.out.println(temp);
+        mAdapter = new MoviesAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMovieList(temp);
         popularity = !popularity;
 
     }
