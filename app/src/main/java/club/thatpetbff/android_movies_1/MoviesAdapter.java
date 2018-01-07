@@ -17,6 +17,30 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MainActivity.MovieViewHolder>  {
 
+    public List<Movie> getmMovieList() {
+        return mMovieList;
+    }
+
+    public void setmMovieList(List<Movie> mMovieList) {
+        this.mMovieList = mMovieList;
+    }
+
+    public LayoutInflater getmInflater() {
+        return mInflater;
+    }
+
+    public void setmInflater(LayoutInflater mInflater) {
+        this.mInflater = mInflater;
+    }
+
+    public Context getmContext() {
+        return mContext;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
     private List<Movie> mMovieList;
     private LayoutInflater mInflater;
     private Context mContext;

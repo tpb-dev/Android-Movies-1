@@ -21,6 +21,7 @@ import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -30,6 +31,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MoviesAdapter mAdapter;
+    boolean sorty = false;
+    boolean popularity = false;
 
     OkHttpClient client = new OkHttpClient();
 
@@ -51,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -62,21 +63,27 @@ public class MainActivity extends AppCompatActivity {
         OkHttpHandler okHttpHandler= new OkHttpHandler();
         okHttpHandler.execute(url);
 
-        //https://www.journaldev.com/13629/okhttp-android-example-tutorial#synchronous-vs-asynchronous-calls
 
 
-        //mAdapter.setMovieList(movies);
 
-        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "Sorting", Snackbar.LENGTH_LONG).show();
+                sortArray();
             }
         });
-        */
+    }
+
+    public void sortArray() {
+        System.out.println("Reached sort");
+        if(!popularity)
+            Collections.sort(mAdapter.getmMovieList(), (m1, m2) -> m1.getPopularity().compareTo(m2.getPopularity()));
+        else
+            Collections.sort(mAdapter.getmMovieList(), (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
+        popularity = !popularity;
+
     }
 
     public class OkHttpHandler extends AsyncTask {
@@ -104,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             String a = (String)s;
             super.onPostExecute(a);
             processJSON(a);
-            //txtString.setText(s);
         }
 
     }
@@ -119,18 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter.setMovieList(obj.getResults());
         System.out.println("Set the list to adapter");
-/*
-        Moshi moshi = new Moshi.Builder().build();
-
-        Type type = Types.newParameterizedType(List.class, Movie.class);
-        JsonAdapter<List<Movie>> adapter = moshi.adapter(type);
-        List<Movie> movies = null;
-        try {
-            movies = adapter.fromJson(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
 
