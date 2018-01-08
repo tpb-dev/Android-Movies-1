@@ -1,5 +1,8 @@
 //https://developer.android.com/training/basics/firstapp/starting-activity.html
 
+
+//https://antonioleiva.com/recyclerview-listener/
+
 package club.thatpetbff.android_movies_1;
 
 import android.os.AsyncTask;
@@ -72,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Sorting", Snackbar.LENGTH_LONG).show();
+                String txt1 = "Sorted by Popularited";
+                String txt2 = "Sorted by Ratings";
+                Snackbar.make(view, popularity ? txt2 : txt1, Snackbar.LENGTH_LONG).show();
                 sortArray();
             }
         });
