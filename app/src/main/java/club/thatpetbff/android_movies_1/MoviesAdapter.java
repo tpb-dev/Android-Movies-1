@@ -64,10 +64,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     @Override
-    public MainActivity.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = mInflater.inflate(R.layout.row_movie, parent, false);
-        MainActivity.MovieViewHolder viewHolder = new MainActivity.MovieViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 

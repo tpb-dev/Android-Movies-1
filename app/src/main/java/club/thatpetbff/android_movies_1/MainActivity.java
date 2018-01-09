@@ -5,6 +5,7 @@
 
 package club.thatpetbff.android_movies_1;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.moshi.JsonAdapter;
@@ -62,8 +64,16 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new MoviesAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
+        //mAdapter = new MoviesAdapter(this);
+        //mRecyclerView.setAdapter(mAdapter);
+
+        Context mContext = this;
+
+        mRecyclerView.setAdapter(new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
+            @Override public void onItemClick(Movie item) {
+                Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
+            }
+        }));
 
         OkHttpHandler okHttpHandler= new OkHttpHandler();
         okHttpHandler.execute(url);
@@ -92,9 +102,14 @@ public class MainActivity extends AppCompatActivity {
         else
             Collections.sort(temp, (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
         System.out.println(temp);
-        mAdapter = new MoviesAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setMovieList(temp);
+        MoviesAdapter aa = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
+            @Override public void onItemClick(Movie item) {
+                System.out.println("HAHAHAHAHAH");
+            }
+        });
+        aa.setMovieList(temp);
+        mRecyclerView.setAdapter(aa);
+//        mAdapter.setMovieList(temp);
         popularity = !popularity;
 
     }
