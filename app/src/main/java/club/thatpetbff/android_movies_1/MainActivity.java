@@ -1,11 +1,9 @@
-//https://developer.android.com/training/basics/firstapp/starting-activity.html
-
-
-//https://antonioleiva.com/recyclerview-listener/
-
 package club.thatpetbff.android_movies_1;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,21 +11,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,23 +28,12 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MoviesAdapter mAdapter;
-    boolean sorty = false;
     boolean popularity = false;
+    Context mContext;
 
     OkHttpClient client = new OkHttpClient();
 
-    public String url= "https://api.themoviedb.org/3/movie/popular?api_key=8332a17f0431de65798214096334a4b6";
-
-    public static class MovieViewHolder extends RecyclerView.ViewHolder
-    {
-        public ImageView imageView;
-        public MovieViewHolder(View itemView)
-        {
-            super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
-        }
-    }
-
+    public String url= "https://api.themoviedb.org/3/movie/popular?api_key=";
 
 
     @Override
@@ -67,13 +46,18 @@ public class MainActivity extends AppCompatActivity {
         //mAdapter = new MoviesAdapter(this);
         //mRecyclerView.setAdapter(mAdapter);
 
-        Context mContext = this;
-
-        mRecyclerView.setAdapter(new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
+        mContext = this;
+        mAdapter = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
             @Override public void onItemClick(Movie item) {
-                Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext, "Item Clicked - " + item.getTitle(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                String message = item.getTitle();
+                intent.putExtra("MyClass", item);
+                startActivity(intent);
+
             }
-        }));
+        });
+        mRecyclerView.setAdapter(mAdapter);
 
         OkHttpHandler okHttpHandler= new OkHttpHandler();
         okHttpHandler.execute(url);
@@ -102,13 +86,18 @@ public class MainActivity extends AppCompatActivity {
         else
             Collections.sort(temp, (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
         System.out.println(temp);
-        MoviesAdapter aa = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
+        mAdapter = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
             @Override public void onItemClick(Movie item) {
-                System.out.println("HAHAHAHAHAH");
+                //Toast.makeText(mContext, "Item Clicked - " + item.getTitle(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                String message = item.getTitle();
+                intent.putExtra("MyClass", item);
+                startActivity(intent);
+
             }
         });
-        aa.setMovieList(temp);
-        mRecyclerView.setAdapter(aa);
+        mAdapter.setMovieList(temp);
+        mRecyclerView.setAdapter(mAdapter);
 //        mAdapter.setMovieList(temp);
         popularity = !popularity;
 
@@ -118,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient();
 
+        public boolean isOnline() {
+            ConnectivityManager cm =
+                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+
         @Override
         protected String doInBackground(Object... params) {
 
@@ -125,11 +121,16 @@ public class MainActivity extends AppCompatActivity {
             builder.url((String)params[0]);
             Request request = builder.build();
 
-            try {
-                Response response = client.newCall(request).execute();
-                return response.body().string();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if(isOnline()) {
+
+                try {
+                    Response response = client.newCall(request).execute();
+                    return response.body().string();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Snackbar.make(mRecyclerView, "No internet connection detected", Snackbar.LENGTH_LONG).show();
             }
             return null;
         }
@@ -147,12 +148,16 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(json);
         Gson gson = new Gson();
         MovieResponse obj = gson.fromJson(json, MovieResponse.class);
-        for(Movie a : obj.getResults()) {
-            System.out.println("Movie: " + a.getTitle());
-        }
+        if(obj != null) {
+            for (Movie a : obj.getResults()) {
+                System.out.println("Movie: " + a.getTitle());
+            }
 
-        mAdapter.setMovieList(obj.getResults());
-        System.out.println("Set the list to adapter");
+            mAdapter.setMovieList(obj.getResults());
+            System.out.println("Set the list to adapter");
+        } else {
+            Snackbar.make(mRecyclerView, "No internet connection detected", Snackbar.LENGTH_LONG).show();
+        }
     }
 
 

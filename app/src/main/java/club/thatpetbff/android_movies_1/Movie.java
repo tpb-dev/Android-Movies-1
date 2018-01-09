@@ -1,12 +1,13 @@
 package club.thatpetbff.android_movies_1;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by randalltom on 1/3/18.
  */
-
-public class Movie {
+@SuppressWarnings("serial")
+public class Movie implements Serializable {
     private String title;
     private String poster_path;
     private Integer vote_count;
