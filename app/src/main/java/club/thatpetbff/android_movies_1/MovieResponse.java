@@ -1,5 +1,7 @@
 package club.thatpetbff.android_movies_1;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
@@ -7,9 +9,14 @@ import java.util.ArrayList;
  */
 
 public class MovieResponse {
+    @SerializedName("page")
     Integer page;
-    Integer total_results;
-    Integer total_pages;
+
+    @SerializedName("total_results")
+    Integer totalResults;
+
+    @SerializedName("total_pages")
+    Integer totalPages;
     ArrayList<Movie> results;
 
     public Integer getPage() {
@@ -20,20 +27,20 @@ public class MovieResponse {
         this.page = page;
     }
 
-    public Integer getTotal_results() {
-        return total_results;
+    public Integer getTotalResults() {
+        return totalResults;
     }
 
-    public void setTotal_results(Integer total_results) {
-        this.total_results = total_results;
+    public void setTotalResults(Integer totalResults) {
+        this.totalResults = totalResults;
     }
 
-    public Integer getTotal_pages() {
-        return total_pages;
+    public Integer getTotalPages() {
+        return totalPages;
     }
 
-    public void setTotal_pages(Integer total_pages) {
-        this.total_pages = total_pages;
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
     }
 
     public ArrayList<Movie> getResults() {

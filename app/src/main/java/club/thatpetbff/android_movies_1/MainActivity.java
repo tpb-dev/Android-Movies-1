@@ -32,8 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
     OkHttpClient client = new OkHttpClient();
 
-    public String url= "https://api.themoviedb.org/3/movie/popular?api_key=";
+    private static final String API_KEY = BuildConfig.API_KEY;
 
+    public String urlPopular= "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY;
+
+    public String urlTopRated= "https://api.themoviedb.org/3/movie/top_rated?api_key=" + API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         OkHttpHandler okHttpHandler= new OkHttpHandler();
-        okHttpHandler.execute(url);
+        okHttpHandler.execute(urlTopRated);
 
 
 
@@ -80,23 +83,15 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Reached sort");
         List<Movie> temp = mAdapter.getmMovieList();
         System.out.println(temp);
-        if(!popularity)
-            Collections.sort(temp, (m1, m2) -> m1.getPopularity().compareTo(m2.getPopularity()));
-        else
-            Collections.sort(temp, (m1, m2) -> m1.getVote_average().compareTo(m2.getVote_average()));
+        if(!popularity) {
+            OkHttpHandler okHttpHandler = new OkHttpHandler();
+            okHttpHandler.execute(urlPopular);
+        } else {
+            OkHttpHandler okHttpHandler = new OkHttpHandler();
+            okHttpHandler.execute(urlTopRated);
+        }
         System.out.println(temp);
-        mAdapter = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
-            @Override public void onItemClick(Movie item) {
-                //Toast.makeText(mContext, "Item Clicked - " + item.getTitle(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                String message = item.getTitle();
-                intent.putExtra("MyClass", item);
-                startActivity(intent);
 
-            }
-        });
-        mAdapter.setMovieList(temp);
-        mRecyclerView.setAdapter(mAdapter);
 //        mAdapter.setMovieList(temp);
         popularity = !popularity;
 
@@ -151,8 +146,18 @@ public class MainActivity extends AppCompatActivity {
             for (Movie a : obj.getResults()) {
                 System.out.println("Movie: " + a.getTitle());
             }
+            mAdapter = new MoviesAdapter(this, new MoviesAdapter.OnItemClickListener() {
+                @Override public void onItemClick(Movie item) {
+                    //Toast.makeText(mContext, "Item Clicked - " + item.getTitle(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(mContext, DetailActivity.class);
+                    String message = item.getTitle();
+                    intent.putExtra("MyClass", item);
+                    startActivity(intent);
 
+                }
+            });
             mAdapter.setMovieList(obj.getResults());
+            mRecyclerView.setAdapter(mAdapter);
             System.out.println("Set the list to adapter");
         } else {
             Snackbar.make(mRecyclerView, "No internet connection detected", Snackbar.LENGTH_LONG).show();

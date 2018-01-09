@@ -113,7 +113,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
         public void bind(final Movie item, final OnItemClickListener listener) {
             //name.setText(item.getTitle());
-            Picasso.with(itemView.getContext()).load(item.getPoster_path()).into(imageView);
+            Picasso.with(itemView.getContext()).load(item.getPosterPath()).into(imageView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(item);

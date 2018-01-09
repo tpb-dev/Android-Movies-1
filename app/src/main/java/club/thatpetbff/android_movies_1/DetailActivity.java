@@ -22,13 +22,13 @@ public class DetailActivity extends AppCompatActivity {
 
         // Capture the layout's TextView and set the string as its text
         TextView userRating = findViewById(R.id.userRating);
-        userRating.setText("User Rating : " + movie.getVote_average());
+        userRating.setText("User Rating : " + movie.getVoteAverage());
 
         TextView releaseDate = findViewById(R.id.releaseDate);
-        releaseDate.setText("Release Date : " + movie.getRelease_date());
+        releaseDate.setText("Release Date : " + movie.getReleaseDate());
 
         TextView originalTitle = findViewById(R.id.originalTitle);
-        originalTitle.setText("Original Title : " + movie.getOriginal_title());
+        originalTitle.setText("Original Title : " + movie.getOriginalTitle());
 
         TextView overview = findViewById(R.id.overview);
         overview.setText("Synposis : " + movie.getOverview());
